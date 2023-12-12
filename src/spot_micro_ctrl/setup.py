@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'spot_micro_gpio'
+package_name = 'spot_micro_ctrl'
 
 setup(
     name=package_name,
@@ -13,14 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='bdsch',
-    maintainer_email='bdsch@todo.todo',
-    description='TODO: Package description',
+    maintainer='Ben Schnapp',
+    maintainer_email='bdschnapp@gmail.com',
+    description='A package for controlling the movement of the spot micro robot',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'main = spot_micro_gpio.spot_micro_gpio:main'
+            'main = spot_micro_ctrl.spot_micro_ctrl:main'
         ],
     },
 )
