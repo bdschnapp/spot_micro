@@ -6,13 +6,14 @@ from sensor_msgs.msg import Imu
 from std_msgs.msg import Int16, String
 
 from spot_micro_ctrl.trajectory_generator import TrajectoryGenerator
-from spot_micro_ctrl.stability_ctrl import StabilityController
+from spot_micro_ctrl.stability_ctrl import StabilityController, HeightController
 
 
 class SpotMicroCtrlStateMachine:
     def __init__(self):
         self.trajectory_generator = TrajectoryGenerator()
         self.stability_controller = StabilityController()
+        self.height_controller = HeightController()
         self.states = ['still', 'walk', 'trot', 'gallop']
         self.state = self.states[0]
         self.servo_msg = String()
@@ -27,10 +28,15 @@ class SpotMicroCtrlStateMachine:
     def run_10ms(self):
         self.trajectory_generator.run_10ms()
         self.stability_controller.run_10ms()
+        self.height_controller.run_10ms()
 
-        xy_target = self.stability_controller.get_xy() + self.trajectory_generator.get_xy()
+        xy_target = (self.stability_controller.get_xy()
+                     + self.trajectory_generator.get_xy()
+                     + self.height_controller.get_xy())
+
         self.servo_msg = String()
         self.servo_msg.data = xy_target.calculate_angles()
+        self.height_controller.set_prev_xy(xy_target)
 
 
 class SpotMicroCtrl(Node):

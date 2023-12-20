@@ -3,7 +3,7 @@ from rclpy import Node
 
 from spot_micro_gpio.PCA9685 import pca9685
 from spot_micro_gpio.ES08MAII import es08maii
-from spot_micro_gpio.BNO085 import bno055
+from spot_micro_gpio.BNO055 import bno055
 
 from sensor_msgs.msg import Imu
 from std_msgs.msg import String
@@ -26,7 +26,7 @@ class SpotMicroGPIO(Node):
             self.servos.append(
                 es08maii(
                     self.pca,
-                    i,
+                    i * 2,
                     self.dc_min[i],
                     self.dc_max[i],
                     self.rad_min[i],
