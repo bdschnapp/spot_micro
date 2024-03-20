@@ -1,6 +1,7 @@
 from spot_micro_gpio.PCA9685 import pca9685
 from spot_micro_gpio.ES08MAII import es08maii
 import numpy as np
+import time
 
 
 # TODO: Move constants into rosparam
@@ -27,3 +28,4 @@ def main():
                 RAD_MAX/2
             )
         )
+        time.sleep(0.2)

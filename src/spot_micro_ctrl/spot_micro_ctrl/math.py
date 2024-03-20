@@ -1,3 +1,4 @@
+# TODO: remove 
 # All units are mm or rad unless otherwise stated
 import numpy as np
 from geometry_msgs.msg import Quaternion
@@ -102,14 +103,3 @@ class PID:
         d = self.kd * (e - self.e_prev) / self.dt
         self.e_prev = e
         return p + self.i + d
-
-
-def _test():
-    global DEBUG
-    DEBUG = True
-    hip, knee = calculate_angles(0.0, -96.0)
-    print(hip / np.pi, knee / np.pi)
-
-
-if __name__ == "__main__":
-    _test()

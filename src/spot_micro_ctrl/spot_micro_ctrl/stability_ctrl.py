@@ -3,7 +3,7 @@ from spot_micro_ctrl.math import XYRobotLegState, quaternion_to_euler, PID
 
 class HeightController:
     def __init__(self, rosparams=None):
-        self.xy_robot_leg_state = XYRobotLegState(rosparams)
+        raise Exception("spot_micro_ctrl.stability_ctrl.HeightController is not implemented yet")
 
 
 class StabilityController:
