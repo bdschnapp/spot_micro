@@ -1,6 +1,11 @@
 # For use with the PCA9685 servo header 
+import os
+if os.environ['ROS_ENV'] == 'True':
+    from spot_micro_gpio.PCA9685 import pca9685
+else:
+    from PCA9685 import pca9685
+
 import numpy as np
-from spot_micro_gpio.PCA9685 import pca9685
 
 # TODO: Move constants into rosparam
 DC_MIN = 2750

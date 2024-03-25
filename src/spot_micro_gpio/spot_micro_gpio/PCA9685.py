@@ -17,6 +17,7 @@ PCA_FREQUENCY = 50 # hz
 # Wrapper for adafruit_pca9685.PCA9685
 class pca9685:
     def __init__(self, i2c_mux=None) -> None:
+        self.shutdown = False
         try:
             self.i2c = busio.I2C(SCL, SDA)
         except Exception as e:

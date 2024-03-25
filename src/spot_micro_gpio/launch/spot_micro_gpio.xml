@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="spot_micro_gpio" exec="main" name="SpotMicroGPIO">
+        <param from="./spot_micro_gpio_cfg.yaml"/>
+    </node>
+</launch>
