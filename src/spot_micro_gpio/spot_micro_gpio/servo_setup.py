@@ -1,4 +1,5 @@
-ROS_ENV = False
+import os
+os.environ['ROS_ENV'] = 'False'
 
 from PCA9685 import pca9685
 from ES08MAII import es08maii

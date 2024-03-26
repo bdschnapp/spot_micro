@@ -2,7 +2,7 @@ import os
 os.environ['ROS_ENV'] = 'True'
 
 import rclpy
-from rclpy import Node
+from rclpy.node import Node
 
 from spot_micro_gpio.PCA9685 import pca9685
 from spot_micro_gpio.ES08MAII import es08maii
