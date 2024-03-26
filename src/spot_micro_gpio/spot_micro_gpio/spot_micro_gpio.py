@@ -1,3 +1,6 @@
+import os
+os.environ['ROS_ENV'] = 'True'
+
 import rclpy
 from rclpy import Node
 
@@ -67,10 +70,10 @@ class SpotMicroGPIO(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    ctrl_node = SpotMicroGPIO()
-    rclpy.spin(ctrl_node)
+    gpio_node = SpotMicroGPIO()
+    rclpy.spin(gpio_node)
 
-    ctrl_node.destroy_node()
+    gpio_node.destroy_node()
     rclpy.shutdown()
 
 

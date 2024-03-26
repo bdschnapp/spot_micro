@@ -17,7 +17,7 @@ PCA_FREQUENCY = 50 # hz
 # Wrapper for adafruit_pca9685.PCA9685
 class pca9685:
     def __init__(self, i2c_mux=None) -> None:
-        self.shutdown = False
+        self._shutdown = False
         try:
             self.i2c = busio.I2C(SCL, SDA)
         except Exception as e:
@@ -41,15 +41,15 @@ class pca9685:
         self.i2c_thread.start()
 
     def _i2c_write_func(self):
-        while not self.shutdown:
+        while not self._shutdown:
             with self.i2c_mux:
                 index, value = self.i2c_queue.get()
                 self.pca.channels[index].duty_cycle = value
                 time.sleep(I2C_RATE)
 
     def shutdown(self):
-        if not self.shutdown:
-            self.shutdown = True
+        if not self._shutdown:
+            self._shutdown = True
         if self.i2c_thread.is_alive():    
             self.i2c_thread.join()
 
