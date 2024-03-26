@@ -17,11 +17,11 @@ class SpotMicroGPIO(Node):
         super().__init__('SpotMicroGPIO')
         self.pca = pca9685()
 
-        self.dc_min = rclpy.get_param('/spot_micro/cfg/dc_min')
-        self.dc_max = rclpy.get_param('/spot_micro/cfg/dc_max')
-        self.rad_min = rclpy.get_param('/spot_micro/cfg/rad_min')
-        self.rad_max = rclpy.get_param('/spot_micro/cfg/rad_max')
-        self.rad_home = rclpy.get_param('/spot_micro/cfg/rad_home')
+        self.dc_min = self.get_param('/spot_micro/cfg/dc_min').value
+        self.dc_max = self.get_param('/spot_micro/cfg/dc_max').value
+        self.rad_min = self.get_param('/spot_micro/cfg/rad_min').value
+        self.rad_max = self.get_param('/spot_micro/cfg/rad_max').value
+        self.rad_home = self.get_param('/spot_micro/cfg/rad_home').value
 
         self.servos = []
         self.servo_target = None
