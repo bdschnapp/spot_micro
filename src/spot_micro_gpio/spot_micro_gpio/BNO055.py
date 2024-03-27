@@ -1,34 +1,40 @@
 import os
-ROS_ENV = os.environ['ROS_ENV'] == 'True'
+ROS_ENV = os.environ['ROS_ENV'].lower() == 'true'
 
 if ROS_ENV:
     import rclpy
     from sensor_msgs.msg import Imu
+    from spot_micro_gpio.ubuntu_BNO055_interface import BNO055_interface as adafruit_bno055
 else:
     import json
+    from ubuntu_BNO055_interface import BNO055_interface as adafruit_bno055
 
 import time
 
-# sudo pip3 install adafruit-circuitpython-bno055
-import adafruit_bno055
-
-if ROS_ENV:
-    class bno055:
-        def __init__(self, i2c, i2c_mux=None):
-            self.imu = adafruit_bno055.BNO055_I2C(i2c)
-            self.imu.mode = adafruit_bno055.IMUPLUS_MODE
+class bno055_base:
+    def __init__(self, i2c_mux=None):
+            self.imu = adafruit_bno055()
+            self.imu.begin() # mode=adafruit_bno055.OPERATION_MODE_IMUPLUS
             self.imu_data_seq_counter = 0
             self.i2c_mux = i2c_mux
             self.quaternion = None
             self.linear_acceleration = None
             self.gyroscope = None
 
-        def run_10ms(self):
-            with self.i2c_mux:
-                self.quaternion = self.imu.quaternion
-                self.linear_acceleration = self.imu.linear_acceleration
-                self.gyroscope = self.imu.gyro
-                time.sleep(0.0001)
+    def run_10ms(self):
+        with self.i2c_mux:
+            self.quaternion = self.imu.getQuat()
+            self.linear_acceleration = self.imu.getVector(adafruit_bno055.VECTOR_LINEARACCEL)
+            self.gyroscope = self.imu.getVector(adafruit_bno055.VECTOR_GYROSCOPE)
+            time.sleep(0.0001)
+
+    def get_imu(self):
+        raise NotImplementedError
+
+if ROS_ENV:
+    class bno055(bno055_base):
+        def __init__(self, i2c_mux=None):
+            super().__init__(i2c_mux)
 
         def get_imu(self):
             imu_msg = Imu()
@@ -65,22 +71,9 @@ if ROS_ENV:
             return imu_msg
 
 else:  # os.environ['ROS_ENV'] == 'False'
-    class bno055:
-        def __init__(self, i2c, i2c_mux=None):
-            self.imu = adafruit_bno055.BNO055_I2C(i2c)
-            self.imu.mode = adafruit_bno055.IMUPLUS_MODE
-            self.imu_data_seq_counter = 0
-            self.i2c_mux = i2c_mux
-            self.quaternion = None
-            self.linear_acceleration = None
-            self.gyroscope = None
-
-        def run_10ms(self):
-            with self.i2c_mux:
-                self.quaternion = self.imu.quaternion
-                self.linear_acceleration = self.imu.linear_acceleration
-                self.gyroscope = self.imu.gyro
-                time.sleep(0.0001)
+    class bno055(bno055_base):
+        def __init__(self, i2c_mux=None):
+            super().__init__( i2c_mux)
 
         def get_imu(self):
             imu_msg_dict = {}

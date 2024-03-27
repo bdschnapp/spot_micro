@@ -42,8 +42,8 @@ class pca9685:
 
     def _i2c_write_func(self):
         while not self._shutdown:
+            index, value = self.i2c_queue.get()
             with self.i2c_mux:
-                index, value = self.i2c_queue.get()
                 self.pca.channels[index].duty_cycle = value
                 time.sleep(I2C_RATE)
 
