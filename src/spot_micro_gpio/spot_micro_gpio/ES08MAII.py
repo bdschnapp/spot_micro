@@ -29,10 +29,10 @@ class es08maii:
         self.dc_min = dc_min
         self.dc_max = dc_max
 
-        self.theta = np.radians(0.0)
-        self.home = np.radians(rad_home)
-        self.rad_min = np.radians(rad_min)
-        self.rad_max = np.radians(rad_max)
+        self.theta = 0.0
+        self.home = rad_home
+        self.rad_min = rad_min
+        self.rad_max = rad_max
 
         self.set_theta(self.home)
 
@@ -51,12 +51,15 @@ class es08maii:
             self.pca[self.i] = dc
             return True
         except Exception as e:
-            raise Exception("Unable to set duty cycle. ", e)
+            raise Exception("es08maii: Unable to set duty cycle. ", e)
 
     def set_theta(self, theta: np.radians) -> bool:
         if self.rad_max >= theta >= self.rad_min:
-            if self._set_dc(self._linear_scale(theta)):
-                self.theta = np.radians(theta)
-                return True
+            try:
+                if self._set_dc(self._linear_scale(theta)):
+                    self.theta = theta
+                    return True
+            except Exception as e:
+                print(str(e))
         else:
-            raise Exception(IndexError, "Theta out of bounds")
+            raise Exception("es08maii: Out of Bounds Error, Unable to set theta")
