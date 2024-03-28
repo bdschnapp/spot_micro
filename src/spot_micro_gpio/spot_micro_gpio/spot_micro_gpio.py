@@ -66,7 +66,6 @@ class SpotMicroGPIO(Node):
         self.rate = 0.01  # 10 ms
         self.run10ms_timer = self.create_timer(self.rate, self._run_10ms)
 
-
     def _servo_sub(self, msg):
         self.get_logger().info('/spot_micro/gpio/servos: ' + str(msg.data))
         self.servo_target = msg.data
@@ -76,18 +75,22 @@ class SpotMicroGPIO(Node):
 
     def _run_10ms(self):
         # publish updated Imu data
+        # self.imu.run_10ms()
         # self._imu_pub()
 
         # control servos
         if self.servo_target:
             for index, value in enumerate(self.servo_target.split(',')):
                 try:
-                    self.servos[index].set_theta(float(value))
-                except IndexError:
-                    self.get_logger().info('set theta failed, index:' + str(index) + 
+                    if abs(self.servos[index].theta - float(value)) > 0.0005:    
+                        self.servos[index].set_theta(float(value))
+                except Exception as e:
+                    self.get_logger().error(str(e) + '\n' +
+                                            'set theta failed, index:' + str(index) + 
                                             " value:" + str(float(value)) + 
                                             " rad_max:" + str(self.servos[index].rad_max) + 
-                                            " rad_min:" + str(self.servos[index].rad_min))
+                                            " rad_min:" + str(self.servos[index].rad_min)
+                                            )
 
 
 def main(args=None):
