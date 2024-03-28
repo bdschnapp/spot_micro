@@ -36,6 +36,12 @@ def main():
         )
         time.sleep(0.5)
 
+    index = 0
+    while index >= 0:
+        index = input("Index: ")
+        dc = input("DC: ")
+        servos[str(index)]._set_dc(int(dc))
+
 
 if __name__ == "__main__":
     main()

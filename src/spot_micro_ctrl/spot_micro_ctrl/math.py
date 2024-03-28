@@ -1,5 +1,7 @@
-# TODO: remove 
 # All units are mm or rad unless otherwise stated
+# Uppercase variable denotes an angle in rads, lowercase variable denotes a side length in mm
+# angle X is across from side length x
+
 import numpy as np
 from geometry_msgs.msg import Quaternion
 from tf_transformations import euler_from_quaternion
@@ -13,26 +15,52 @@ def quaternion_to_euler(quat: Quaternion):
     return [roll, pitch, yaw]
 
 
-def law_of_cosine(a: float, b: float, c: float) -> float:
-    # returns the angle across from length c
+def sss_law_of_cosine(a: float, b: float, c: float) -> float:
+    # returns the angle C across from length c, parameters a, b and c are side lengths
     if DEBUG:
         print(a, b, c)
         print("arccos", np.arccos((np.square(a) + np.square(b) - np.square(c)) / np.abs(2 * a * b)))
     return np.arccos((np.square(a) + np.square(b) - np.square(c)) / np.abs(2 * a * b))
 
 
+def sas_law_of_cosine(a: float, B: float, c: float) -> float:
+    # returns length of side b, paramaters a and c are side lengths adjacent to angle B
+    return np.sqrt(np.square(a) + np.square(c) - (2 * a * c * np.cos(B)))
+
+
 def calculate_angles(x: float, y: float, a=68, c=68):
     b = np.sqrt(np.square(x) + np.square(y))
-    knee_servo_target = np.pi - law_of_cosine(a, c, b)
+    knee_servo_target = np.pi - sss_law_of_cosine(a, c, b)
 
-    C = law_of_cosine(a, b, c)
-    offset = np.arcsin(x / b) + ((np.pi/2) * (x <= 0))
-    hip_servo_target = np.pi - (C + offset)
+    C = sss_law_of_cosine(a, b, c)
+    Y = np.arcsin(x / b) + ((np.pi/2) * (x <= 0))
+    hip_servo_target = np.pi - (C + Y)
     return hip_servo_target, knee_servo_target
 
 
 def calculate_xy(hip_angle, knee_angle, a=68, c=68):
-    pass
+    B = np.pi - knee_angle
+    b = sas_law_of_cosine(a, B, c)
+    C = sss_law_of_cosine(a, b, c)
+    Y = np.pi - (C + hip_angle)
+
+    # Y very close to 90 degrees
+    if abs(Y - (np.pi / 2)) < 0.05:
+        return 0, b
+    
+    # Y less than 90 degrees
+    if Y < np.pi / 2:
+        X = (np.pi / 2) - Y
+        x = (b / np.sin(np.pi / 2)) * np.sin(X)
+        y = (b / np.sin(np.pi / 2)) * np.sin(Y)
+        return x, y
+
+    # Y greater than 90 degrees
+    else:
+        Y = np.pi - Y
+        x = -1 * (b / np.sin(np.pi / 2)) * np.sin(X)
+        y = (b / np.sin(np.pi / 2)) * np.sin(Y)
+        return x, y
 
 
 class XYRobotLegState:
