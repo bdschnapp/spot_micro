@@ -63,6 +63,8 @@ class SpotMicroGPIO(Node):
             10
         )
 
+        # self.joint_state_publisher = self.create_publisher()
+
         self.rate = 0.01  # 10 ms
         self.run10ms_timer = self.create_timer(self.rate, self._run_10ms)
 

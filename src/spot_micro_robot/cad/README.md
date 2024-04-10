@@ -1,0 +1,3 @@
+Do not move files in this directory, otherwise references to files in main.SLDASM will break. It is ok to move the entire cad directory, but do not reorganize the contents within the cad directory.
+
+All cad files should be stored in this directory, and the solidworks to urdf plugin should be used to generate the robot urdf. This exporter will attempt to create a ROS1 urdf package, but only the contents of config, meshes, and urdf should be kept. 
